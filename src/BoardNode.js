@@ -3,62 +3,58 @@ import { useState } from "react";
 import EnumActionNames from "./EnumActionNames";
 
 const BoardNode = (props) => {
-    const { x, y, selector} = props;
+    const { x, y, selector, initialEnvironment, piece } = props;
 
-    const [water, setWater] = useState(false);
-    const [fire, setFire] = useState(false);
-    const [seed, setSeed] = useState(false);
-    const [road, setRoad] = useState(false);
-    const [hill, setHill] = useState(false);
-    const [building, setBuilding] = useState(false);
-    const [pieces, setPieces] = useState([]);
+    const [environment, setEnviornment] = useState(initialEnvironment);
+    const [onFire, setOnFire] = useState(false);
 
     const enviornmentChange = () => {
-        if (selector === EnumActionNames.WATER && !building && !hill) {
-            setWater(true);
+        if (piece) {
+            return;
         }
-        if (selector === EnumActionNames.FIRE && !water && !road && !hill && !building) {
-            setFire(true);
+        if (selector === EnumActionNames.WATER && environment !== "building" && environment !== EnumActionNames.HILLS) {
+            setEnviornment(EnumActionNames.WATER);
         }
-        if (selector === EnumActionNames.SEEDS && !water && !fire && !building) {
-            setSeed(true);
+        if (selector === EnumActionNames.FIRE && environment !== EnumActionNames.WATER && environment !== EnumActionNames.HILLS) {
+            setOnFire(true);
         }
-        if (selector === EnumActionNames.ROADS && !fire && !building) {
-            setRoad(true);
+        if (selector === EnumActionNames.SEEDS && environment !== EnumActionNames.WATER && environment !== EnumActionNames.FIRE && environment !== "building") {
+            setEnviornment(EnumActionNames.SEEDS);
         }
-        if (selector === EnumActionNames.HILLS && !building && !water) {
-            setHill(true);
+        if (selector === EnumActionNames.ROADS && environment !== EnumActionNames.FIRE && environment !== "building") {
+            setEnviornment(EnumActionNames.ROADS);
+        }
+        if (selector === EnumActionNames.HILLS && environment !== "building" && environment !== EnumActionNames.WATER) {
+            setEnviornment(EnumActionNames.HILLS);
         }
         if (selector === EnumActionNames.ERASE) {
-            setWater(false);
-            setFire(false);
-            setSeed(false);
-            setRoad(false);
-            setHill(false);
+            setEnviornment(null);
         }
     }
 
     const generateBackgroundColor = () => {
-        if (water) {
+        if (environment === EnumActionNames.WATER) {
             return "blue";
         }
-        if (fire) {
+        if (onFire) {
             return "red";
         }
-        if (building) {
+        if (environment === "building") {
             return "grey";
         }
-        if (hill) {
+        if (environment === EnumActionNames.HILLS) {
             return "darkgreen";
         }
-        if (road) {
+        if (environment === EnumActionNames.ROADS) {
             return "brown";
         }
-        if (seed) {
+        if (environment === EnumActionNames.SEEDS) {
             return "lightgreen";
         }
         return null;
     }
+
+    const pieceIcon = piece ? piece.team === 0 ? piece.type.icons.white : piece.type.icons.black : null //NOSONAR
 
     return (
         <Box sx={{ height: "100%", width: "100%", backgroundColor: generateBackgroundColor() }} onClick={enviornmentChange} onMouseEnter={(e) => {
@@ -67,6 +63,7 @@ const BoardNode = (props) => {
             }
             enviornmentChange();
         }}>
+            {piece && <Box sx={{ height: "100%", width: "100%", backgroundImage: "url(" + pieceIcon + ")", backgroundSize: "cover" }} />}
         </Box>
     );
 };
