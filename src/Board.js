@@ -5,6 +5,9 @@ import BoardNode from "./BoardNode";
 import { useMemo, useState } from "react";
 import ControlledSpeedDial from "./ControlledSpeedDial";
 import EnumActionNames from "./EnumActionNames";
+import { LocalFireDepartment, Water, AddRoad, Grass, Terrain, Delete } from '@mui/icons-material/';
+import Cursor from "./Cursor";
+
 
 const Board = () => {
     const aspectRatio = 16 / 9;
@@ -14,54 +17,59 @@ const Board = () => {
     const [selector, setSelector] = useState("");
 
     const actions = [
-        {name: EnumActionNames.WATER, actionFunction: () => setSelector((prev) => {
+        {name: EnumActionNames.WATER, icon: <Water/>, actionFunction: () => setSelector((prev) => {
             if (prev === EnumActionNames.WATER) {
                 return "";
             }
             return EnumActionNames.WATER;
         })},
-        {name: EnumActionNames.FIRE, actionFunction: () => setSelector((prev) => {
+        {name: EnumActionNames.FIRE, icon: <LocalFireDepartment/>, actionFunction: () => setSelector((prev) => {
             if (prev === EnumActionNames.FIRE) {
                 return "";
             }
             return EnumActionNames.FIRE;
         })},
-        {name: EnumActionNames.SEEDS, actionFunction: () => setSelector((prev) => {
+        {name: EnumActionNames.SEEDS, icon: <Grass/>, actionFunction: () => setSelector((prev) => {
             if (prev === EnumActionNames.SEEDS) {
                 return "";
             }
             return EnumActionNames.SEEDS;
         })},
-        {name: EnumActionNames.ROADS, actionFunction: () => setSelector((prev) => {
+        {name: EnumActionNames.ROADS, icon: <AddRoad/>, actionFunction: () => setSelector((prev) => {
             if (prev === EnumActionNames.ROADS) {
                 return "";
             }
             return EnumActionNames.ROADS;
         })},
-        {name: EnumActionNames.HILLS, actionFunction: () => setSelector((prev) => {
+        {name: EnumActionNames.HILLS, icon: <Terrain/>, actionFunction: () => setSelector((prev) => {
             if (prev === EnumActionNames.HILLS) {
                 return "";
             }
             return EnumActionNames.HILLS;
         })},
+        {name: EnumActionNames.ERASE, icon: <Delete/>, actionFunction: () => setSelector((prev) => {
+            if (prev === EnumActionNames.ERASE) {
+                return "";
+            }
+            return EnumActionNames.ERASE;
+        })},
     ]
-
-    const [startedFilled, setStartedFilled] = useState(true);
 
     const gameBoard = useMemo(() => {
         const tempBoard = [];
         for (let i = 0; i < columns; i++) {
             let tempRow = [];
             for (let j = 0; j < rows; j++) {
-                tempRow.push(<BoardNode x={i} y={j} selector={selector} startedFilled={startedFilled} setStartedFilled={setStartedFilled}> </BoardNode>);
+                tempRow.push(<BoardNode x={i} y={j} selector={selector}> </BoardNode>);
             }
             tempBoard.push(tempRow);
         }
         return tempBoard;
-    }, [selector, startedFilled]);
+    }, [selector]);
 
     return (
         <Box sx={{ backgroundImage: "url(" + grassyBackground + ")", height: "100vh", width: "100vw", userSelect:"none" }}>
+            <Cursor/>
             <Box sx={{ aspectRatio: "" + aspectRatio, maxHeight: "calc(100vh - 10px)", maxWidth: "calc(100vw - 10px)", border: "5px solid black" }}>
                 <Grid sx={{ height: "100%", width: "100%" }} container columns={30} direction="row" wrap="nowrap">
                     {gameBoard.map((row, i) => {

@@ -1,5 +1,4 @@
 import * as React from 'react';
-import Box from '@mui/material/Box';
 import SpeedDial from '@mui/material/SpeedDial';
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import SpeedDialAction from '@mui/material/SpeedDialAction';
@@ -28,7 +27,7 @@ export default function ControlledSpeedDial(props) {
             {actions.map((action) => (
                 <SpeedDialAction
                     key={action.name}
-                    icon={<SpeedDialIcon />}
+                    icon={action.icon}
                     tooltipTitle={action.name}
                     onClick={(e, eventType) => handleClose(e, eventType, action.actionFunction)}
                 />
